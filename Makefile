@@ -7,3 +7,7 @@ migrate-up: migrate-build
 
 migrate-down: migrate-build
 	./build/migrate --action=down
+
+.PHONY: mock-gen
+mock-gen:
+	mockgen -source=./internal/domain/customer.go -destination=./internal/domain/mock/customer.go -package=mock

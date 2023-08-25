@@ -3,7 +3,7 @@
 CREATE TABLE "customer" (
     "id" INTEGER GENERATED ALWAYS AS IDENTITY,
     "username" VARCHAR(255),
-    "email" VARCHAR(360) NOT NULL,
+    "email" VARCHAR(360) NOT NULL UNIQUE,
     "email_confirmation" BOOLEAN NOT NULL DEFAULT false,
     "password_hash" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
