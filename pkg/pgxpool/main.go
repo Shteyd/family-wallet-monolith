@@ -4,7 +4,18 @@ import (
 	"context"
 	"monolith/pkg/slog"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// Aliases
+type (
+	CommandTag   pgconn.CommandTag
+	Rows         = pgx.Rows
+	Row          = pgx.Row
+	Batch        = pgx.Batch
+	BatchResults = pgx.BatchResults
 )
 
 func NewDatabase(ctx context.Context, databaseDsn string) *pgxpool.Pool {

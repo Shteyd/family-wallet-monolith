@@ -38,7 +38,9 @@ require (
 
 require (
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.4.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
