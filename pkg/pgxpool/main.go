@@ -2,24 +2,21 @@ package pgxpool
 
 import (
 	"context"
-	"log"
-	"time"
+	"monolith/pkg/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func NewDatabase(ctx context.Context, databaseDsn string) *pgxpool.Pool {
-	database, err := pgxpool.New(ctx, databaseDsn)
+	config, err := pgxpool.ParseConfig(databaseDsn)
 	if err != nil {
-		log.Fatalln(err.Error())
+		slog.Fatal(err.Error())
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
-	if err := database.Ping(ctx); err != nil {
-		log.Fatalln(err.Error())
+	pool, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		slog.Fatal(err.Error())
 	}
 
-	return database
+	return pool
 }
