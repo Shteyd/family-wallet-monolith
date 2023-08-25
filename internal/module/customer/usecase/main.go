@@ -2,21 +2,22 @@ package usecase
 
 import (
 	"monolith/internal/domain"
+	"monolith/internal/module/customer/core"
 	"time"
 )
 
 type _CustomerUsecase struct {
 	Logger             domain.Logger
-	CustomerRepository domain.CustomerRepository
+	CustomerRepository core.CustomerRepository
 
 	defaultContextTimeout time.Duration
 }
 
 func NewCustomerUsecase(
 	logger domain.Logger,
-	customerRepository domain.CustomerRepository,
+	customerRepository core.CustomerRepository,
 	contextTimeout time.Duration,
-) domain.CustomerUsecase {
+) core.CustomerUsecase {
 	return &_CustomerUsecase{
 		Logger:                logger,
 		CustomerRepository:    customerRepository,

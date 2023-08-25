@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"monolith/internal/domain"
-	"monolith/internal/domain/helpers"
+	"monolith/internal/module/customer/core"
 )
 
-func (usecase *_CustomerUsecase) Get(ctx context.Context, entity domain.Customer) (domain.Customer, error) {
+func (usecase *_CustomerUsecase) Get(ctx context.Context, entity core.Customer) (core.Customer, error) {
 	ctx, cancel := context.WithTimeout(ctx, usecase.defaultContextTimeout)
 	defer cancel()
 
@@ -16,15 +16,15 @@ func (usecase *_CustomerUsecase) Get(ctx context.Context, entity domain.Customer
 			"customer_id":    entity.Id,
 			"customer_email": entity.Email,
 		})
-		return domain.Customer{}, domain.ErrorInternalServer
+		return core.Customer{}, domain.ErrorInternalServer
 	}
 
-	if helpers.IsEmpty[domain.Customer](entity) {
+	if entity.IsEmpty() {
 		usecase.Logger.Warn("empty customer", domain.LoggerArgs{
 			"customer_id":    entity.Id,
 			"customer_email": entity.Email,
 		})
-		return domain.Customer{}, domain.ErrorNotFound
+		return core.Customer{}, domain.ErrorNotFound
 	}
 
 	return entity, nil

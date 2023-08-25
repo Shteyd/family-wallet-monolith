@@ -3,9 +3,10 @@ package usecase
 import (
 	"context"
 	"monolith/internal/domain"
+	"monolith/internal/module/customer/core"
 )
 
-func (usecase *_CustomerUsecase) Update(ctx context.Context, entity domain.Customer) error {
+func (usecase *_CustomerUsecase) Update(ctx context.Context, entity core.Customer) error {
 	ctx, cancel := context.WithTimeout(ctx, usecase.defaultContextTimeout)
 	defer cancel()
 

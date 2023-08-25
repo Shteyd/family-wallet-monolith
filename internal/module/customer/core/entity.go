@@ -1,9 +1,6 @@
-package domain
+package core
 
-import (
-	"context"
-	"time"
-)
+import "time"
 
 type Customer struct {
 	Id        int       `json:"id" example:"1"`
@@ -15,17 +12,6 @@ type Customer struct {
 	DeletedAt time.Time `json:"deleted_at" example:"2023-08-25 17:27:35.811169+00"`
 }
 
-type (
-	CustomerUsecase interface {
-		Create(context.Context, Customer) (Customer, error)
-		Get(context.Context, Customer) (Customer, error)
-		Update(context.Context, Customer) error
-	}
-
-	CustomerRepository interface {
-		Create(context.Context, Customer) (Customer, error)
-		Get(context.Context, Customer) (Customer, error)
-		Update(context.Context, Customer) error
-		Delete(context.Context, Customer) error
-	}
-)
+func (entity Customer) IsEmpty() bool {
+	return entity == Customer{}
+}

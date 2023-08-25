@@ -10,4 +10,4 @@ migrate-down: migrate-build
 
 .PHONY: mock-gen
 mock-gen:
-	mockgen -source=./internal/domain/customer.go -destination=./internal/domain/mock/customer.go -package=mock
+	mockgen -source=./internal/module/customer/core/customer.go -destination=./internal/module/customer/core/mock/customer.go -package=mock
