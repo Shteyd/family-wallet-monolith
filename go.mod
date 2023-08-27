@@ -4,11 +4,14 @@ go 1.20
 
 require (
 	github.com/bytedance/sonic v1.9.2
+	github.com/doug-martin/goqu/v9 v9.18.0
 	github.com/goccy/go-json v0.10.2
 	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/lib/pq v1.10.9
+	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.15.0
+	github.com/redis/go-redis/v9 v9.1.0
 	github.com/rs/zerolog v1.30.0
 	github.com/spf13/viper v1.16.0
 )
@@ -37,10 +40,10 @@ require (
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
-	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.4.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect

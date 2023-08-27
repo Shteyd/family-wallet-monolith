@@ -3,30 +3,34 @@ package postgres
 import (
 	"context"
 	"monolith/internal/domain"
-
-	pgx "github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type PostgresAdapter interface {
-	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
-	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+	domain.DatabaseManager
 }
 
 type _PostgresAdapter struct {
-	Database domain.Database
+	DatabaseManager domain.DatabaseManager
 }
 
-func NewPostgresAdapter(database domain.Database) PostgresAdapter {
+func NewPostgresAdapter(databaseManager domain.DatabaseManager) PostgresAdapter {
 	return &_PostgresAdapter{
-		Database: database,
+		DatabaseManager: databaseManager,
 	}
 }
 
-func (adapter *_PostgresAdapter) Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
-	return adapter.Database.Exec(ctx, sql, args...)
+func (adapter *_PostgresAdapter) Begin(ctx context.Context) (domain.DatabaseManager, error) {
+	return adapter.DatabaseManager.Begin(ctx)
 }
 
-func (adapter *_PostgresAdapter) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
-	return adapter.Database.QueryRow(ctx, sql, args...)
+func (adapter *_PostgresAdapter) Commit(ctx context.Context) error {
+	return adapter.DatabaseManager.Commit(ctx)
+}
+
+func (adapter *_PostgresAdapter) Rollback(ctx context.Context) error {
+	return adapter.DatabaseManager.Rollback(ctx)
+}
+
+func (adapter *_PostgresAdapter) GetConnect() domain.Database {
+	return adapter.DatabaseManager.GetConnect()
 }
