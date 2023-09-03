@@ -10,6 +10,8 @@ import (
 )
 
 func (repository *_CustomerRepository) UpdateEmailConfirmation(ctx context.Context, entity core.Customer) error {
+	repository.CacheAdapter.Del(entity)
+
 	model := model.NewCustomer(entity)
 	sql, args, err := query.GetUpdateEmailConfirmation(model)
 	if err != nil {

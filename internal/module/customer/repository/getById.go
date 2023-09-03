@@ -2,40 +2,40 @@ package repository
 
 import (
 	"context"
-	"monolith/internal/module/customer/adapter/redis"
+	"monolith/internal/domain"
 	"monolith/internal/module/customer/core"
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
-	cache "github.com/redis/go-redis/v9"
 )
 
 func (repository *_CustomerRepository) GetById(ctx context.Context, entity core.Customer) (core.Customer, error) {
-	model := model.NewCustomer(entity)
-
-	if err := repository.RedisAdapter.Get(ctx, redis.GetCustomerKey(model.Id)).Scan(&model); err != nil {
-		if !errors.Is(err, cache.Nil) {
-			return core.Customer{}, errors.Wrap(err, "get customer from redis error")
+	if entity, err := repository.CacheAdapter.Get(entity); err != nil {
+		if !errors.Is(err, domain.ErrorNotFound) {
+			return core.Customer{}, errors.Wrap(err, "cache customer error")
 		}
 	} else {
-		return model.ToEntity(), nil
+		return entity, nil
 	}
 
-	sql, args, err := query.GetSelectById(model)
+	selectModel := model.NewCustomer(entity)
+	sql, args, err := query.GetSelectById(selectModel)
 	if err != nil {
-		return core.Customer{}, errors.Wrap(err, "generate select customer sql-query error")
+		return core.Customer{}, errors.Wrap(err, "generate select customer sql query error")
 	}
 
 	connection := repository.PostgresAdapter.GetConnect()
 
-	if err := connection.QueryRow(ctx, sql, args...).Scan(&model); err != nil {
-		return core.Customer{}, errors.Wrap(err, "get customer from database error")
+	rows, err := connection.Query(ctx, sql, args...)
+	if err != nil {
+		return core.Customer{}, errors.Wrap(err, "execute select customer query error")
 	}
 
-	if err := repository.RedisAdapter.Set(ctx, redis.GetCustomerKey(model.Id), model).Err(); err != nil {
-		// TODO: warn error
-		return model.ToEntity(), errors.Wrap(err, "set customer in redis error")
+	model, err := pgx.CollectOneRow(rows, pgx.RowToAddrOfStructByNameLax[model.Customer])
+	if err != nil {
+		return core.Customer{}, errors.Wrap(err, "scan customer model error")
 	}
 
 	return model.ToEntity(), nil

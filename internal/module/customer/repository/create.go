@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"monolith/internal/module/customer/adapter/redis"
 	"monolith/internal/module/customer/core"
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
@@ -31,10 +30,9 @@ func (repository *_CustomerRepository) Create(ctx context.Context, entity core.C
 		return core.Customer{}, errors.Wrap(err, "scan customer model error")
 	}
 
-	if err := repository.RedisAdapter.Set(ctx, redis.GetCustomerKey(model.Id), model).Err(); err != nil {
-		// TODO: тут надо бы не error-layer кидать, а warn. Реализовать выбор слоя в apperrors
-		return model.ToEntity(), errors.Wrap(err, "set into redis error")
-	}
+	entity = model.ToEntity()
 
-	return model.ToEntity(), nil
+	repository.CacheAdapter.Set(entity)
+
+	return entity, nil
 }

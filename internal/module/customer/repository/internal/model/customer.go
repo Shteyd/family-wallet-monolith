@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"monolith/internal/module/customer/core"
-	"time"
 )
 
 type Customer struct {
@@ -11,10 +10,10 @@ type Customer struct {
 	Username          sql.NullString `db:"username"`
 	Email             string         `db:"email"`
 	EmailConfirmation bool           `db:"email_confirmation"`
-	Password          string         `db:"password"`
-	CreatedAt         time.Time      `db:"created_at"`
-	UpdatedAt         time.Time      `db:"updated_at"`
-	DeletedAt         time.Time      `db:"deleted_at"`
+	Password          string         `db:"password_hash"`
+	CreatedAt         sql.NullTime   `db:"created_at"`
+	UpdatedAt         sql.NullTime   `db:"updated_at"`
+	DeletedAt         sql.NullTime   `db:"deleted_at"`
 }
 
 func NewCustomer(entity core.Customer) Customer {
@@ -26,9 +25,9 @@ func NewCustomer(entity core.Customer) Customer {
 		},
 		Email:     entity.Email,
 		Password:  entity.Password,
-		CreatedAt: entity.CreatedAt,
-		UpdatedAt: entity.UpdatedAt,
-		DeletedAt: entity.DeletedAt,
+		CreatedAt: sql.NullTime{Time: entity.CreatedAt, Valid: true},
+		UpdatedAt: sql.NullTime{Time: entity.UpdatedAt, Valid: true},
+		DeletedAt: sql.NullTime{Time: entity.DeletedAt, Valid: true},
 	}
 }
 
@@ -42,8 +41,8 @@ func (model Customer) ToEntity() core.Customer {
 		Username:  model.Username.String,
 		Email:     model.Email,
 		Password:  model.Password,
-		CreatedAt: model.CreatedAt,
-		UpdatedAt: model.UpdatedAt,
-		DeletedAt: model.DeletedAt,
+		CreatedAt: model.CreatedAt.Time,
+		UpdatedAt: model.UpdatedAt.Time,
+		DeletedAt: model.DeletedAt.Time,
 	}
 }

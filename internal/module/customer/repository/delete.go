@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"monolith/internal/module/customer/adapter/redis"
 	"monolith/internal/module/customer/core"
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
@@ -13,9 +12,7 @@ import (
 func (repository *_CustomerRepository) Delete(ctx context.Context, entity core.Customer) error {
 	connection := repository.PostgresAdapter.GetConnect()
 
-	if err := repository.RedisAdapter.Del(ctx, redis.GetCustomerKey(entity.Id)).Err(); err != nil {
-		return errors.Wrap(err, "delete from redis error")
-	}
+	repository.CacheAdapter.Del(entity)
 
 	deleteModel := model.NewCustomer(entity)
 	sql, args, err := query.GetDelete(deleteModel)
