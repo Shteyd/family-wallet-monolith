@@ -7,19 +7,28 @@ import (
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 )
 
 func (repository *_CustomerRepository) Create(ctx context.Context, entity core.Customer) (core.Customer, error) {
-	model := model.NewCustomer(entity)
+	connection := repository.PostgresAdapter.GetConnect()
 
-	sql, args, err := query.GetInsert(model)
+	insertModel := model.NewCustomer(entity)
+
+	sql, args, err := query.GetInsert(insertModel)
 	if err != nil {
 		return core.Customer{}, errors.Wrap(err, "generate create customer sql-query error")
 	}
 
-	if err := repository.PostgresAdapter.GetConnect().QueryRow(ctx, sql, args...).Scan(&model); err != nil {
+	rows, err := connection.Query(ctx, sql, args...)
+	if err != nil {
 		return core.Customer{}, errors.Wrap(err, "create customer in database error")
+	}
+
+	model, err := pgx.CollectOneRow(rows, pgx.RowToAddrOfStructByNameLax[model.Customer])
+	if err != nil {
+		return core.Customer{}, errors.Wrap(err, "scan customer model error")
 	}
 
 	if err := repository.RedisAdapter.Set(ctx, redis.GetCustomerKey(model.Id), model).Err(); err != nil {

@@ -18,57 +18,66 @@ func GetInsert(model model.Customer) (string, []any, error) {
 	return goqu.Dialect.
 		Insert(model.TableName()).
 		Rows(record).
-		Returning("*").
+		Returning(model).
 		Prepared(true).
 		ToSQL()
 }
 
-func GetSelect(model model.Customer) (string, []any, error) {
-	whereExpressions := make(goqu.Ex)
-
-	if model.Id != 0 {
-		whereExpressions["id"] = model.Id
-	} else {
-		whereExpressions["email"] = model.Email
-		whereExpressions["password_hash"] = model.Password
-	}
-
+func GetSelectById(model model.Customer) (string, []any, error) {
 	return goqu.Dialect.
-		Select("*").
+		Select(model).
 		From(model.TableName()).
-		Where(whereExpressions).
-		Prepared(true).
-		ToSQL()
+		Where(
+			goqu.C("id").Eq(model.Id),
+		).Prepared(true).ToSQL()
+}
+
+func GetSelectByCreds(model model.Customer) (string, []any, error) {
+	return goqu.Dialect.
+		Select(model).
+		From(model.TableName()).
+		Where(
+			goqu.C("email").Eq(model.Email),
+			goqu.C("password_hash").Eq(model.Password),
+		).Prepared(true).ToSQL()
 }
 
 func GetDelete(model model.Customer) (string, []any, error) {
 	return goqu.Dialect.
 		Delete(model.TableName()).
-		Where(goqu.C("id").Eq(model.Id)).
-		Prepared(true).
-		ToSQL()
+		Where(
+			goqu.C("id").Eq(model.Id),
+		).Prepared(true).ToSQL()
 }
 
-func GetUpdate(oldModel, model model.Customer) (string, []any, error) {
+func GetUpdate(model model.Customer) (string, []any, error) {
 	record := make(goqu.Record)
 
-	model.Id = oldModel.Id
-
-	if oldModel.Username.Valid || model.Username.Valid {
-
+	if model.Username.Valid {
+		record["username"] = model.Username.String
 	}
-
-	if oldModel.Email != model.Email {
+	if model.Email != "" {
 		record["email"] = model.Email
 	}
-	if oldModel.Password != model.Password {
+	if model.Password != "" {
 		record["password"] = model.Password
 	}
 
 	return goqu.Dialect.
 		Update(model.TableName()).
 		Set(record).
-		Where(goqu.C("id").Eq(model.Id)).
-		Prepared(true).
-		ToSQL()
+		Where(
+			goqu.C("id").Eq(model.Id),
+		).Prepared(true).ToSQL()
+}
+
+func GetUpdateEmailConfirmation(model model.Customer) (string, []any, error) {
+	return goqu.Dialect.
+		Update(model.TableName()).
+		Set(goqu.Record{
+			"email_confirmation": model.EmailConfirmation},
+		).
+		Where(
+			goqu.C("id").Eq(model.Id),
+		).Prepared(true).ToSQL()
 }
