@@ -11,6 +11,9 @@ type Config struct {
 
 	DatabaseDsn string `mapstructure:"DATABASE_DSN"`
 
+	TokenSalt    string `mapstructure:"TOKEN_SALT"`
+	PasswordSalt string `mapstructure:"PASSWORD_SALT"`
+
 	Environment string `mapstructure:"ENVIRONMENT"`
 	IsDebug     bool   `mapstructure:"IS_DEBUG"`
 }

@@ -4,10 +4,12 @@ import (
 	"context"
 	"monolith/config"
 	"monolith/internal/infrastructure/cache"
+	"monolith/internal/infrastructure/crypto"
 	"monolith/internal/infrastructure/database"
 	"monolith/internal/infrastructure/delivery/http"
+	"monolith/internal/infrastructure/jwt"
 	"monolith/internal/infrastructure/logger"
-	"monolith/internal/module/customer"
+	"monolith/internal/module/authorization"
 	"monolith/pkg/pgxpool"
 	"monolith/pkg/zerolog"
 	"os"
@@ -38,14 +40,22 @@ func main() {
 
 	database := database.NewDatabaseManager(pgxpool, nil)
 
+	// crypto
+	cryptoManager := crypto.NewCryptoManager(config.PasswordSalt)
+
+	// jwt
+	jwtManager := jwt.NewTokenManager(config.TokenSalt)
+
 	// init modules
-	customerModule := customer.NewCustomerModule(customer.Dependency{
-		Logger:   logger,
-		Cache:    cache,
-		Database: database,
-		Timeout:  defaultUsecaseTimeout,
+	authModule := authorization.NewAuthorizationModule(authorization.Dependency{
+		Logger:     logger,
+		Cache:      cache,
+		Database:   database,
+		CryptoHash: cryptoManager,
+		Token:      jwtManager,
+		Timeout:    defaultUsecaseTimeout,
 	})
 
-	server := http.NewHttpServer(customerModule, config.HttpPort)
+	server := http.NewHttpServer(authModule, config.HttpPort)
 	server.Run()
 }

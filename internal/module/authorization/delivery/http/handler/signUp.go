@@ -1,11 +1,12 @@
-package customerHandler
+package authHandler
 
 import (
 	"context"
-	"monolith/internal/module/customer/core"
-	"monolith/internal/module/customer/delivery/http/handler/internal/request"
+	"encoding/json"
+	"monolith/internal/module/authorization/delivery/http/handler/request"
+	customer "monolith/internal/module/customer/core"
+	token "monolith/internal/module/token/core"
 	"monolith/pkg/indigo"
-	"monolith/pkg/json"
 	"monolith/pkg/serializer"
 
 	"github.com/go-playground/validator/v10"
@@ -14,11 +15,11 @@ import (
 	"github.com/indigo-web/indigo/router/inbuilt/types"
 )
 
-type CustomerCreator interface {
-	Save(context.Context, core.Customer) (core.Customer, error)
+type AuthSignUp interface {
+	SignUp(context.Context, customer.Customer) (token.Token, error)
 }
 
-func NewSignUp(usecase CustomerCreator) types.Handler {
+func NewSignUp(usecase AuthSignUp) types.Handler {
 	return func(r *http.Request) http.Response {
 		var requestBody request.SignUpBody
 		if err := json.NewDecoder(r.Body()).Decode(&requestBody); err != nil {
@@ -32,13 +33,13 @@ func NewSignUp(usecase CustomerCreator) types.Handler {
 			return indigo.ErrorResponse(r, status.BadRequest, jsonBody)
 		}
 
-		customer, err := usecase.Save(r.Ctx, requestBody.ToEntity())
+		token, err := usecase.SignUp(r.Ctx, requestBody.ToEntity())
 		if err != nil {
 			jsonBody := serializer.ErrorResponse(int(status.InternalServerError), err, nil)
-			return indigo.ErrorResponse(r, status.InternalServerError, jsonBody)
+			return indigo.ErrorResponse(r, status.BadRequest, jsonBody)
 		}
 
-		jsonBody := serializer.SuccessResponse(customer)
+		jsonBody := serializer.SuccessResponse(token)
 		return indigo.SuccessResponse(r, jsonBody)
 	}
 }

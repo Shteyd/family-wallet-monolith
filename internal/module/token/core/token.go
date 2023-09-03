@@ -1,6 +1,9 @@
 package core
 
-import "context"
+import (
+	"context"
+	"monolith/internal/domain"
+)
 
 type (
 	TokenUsecase interface {
@@ -8,8 +11,8 @@ type (
 	}
 
 	TokenRepository interface {
-		GenerateToken(context.Context) (Token, error)
-		ValidateToken(context.Context) error
-		RefreshToken(context.Context) (Token, error)
+		GenerateAccessToken(context.Context, int) (string, error)
+		GenerateRefreshToken(context.Context, int) (string, error)
+		DecodeToken(context.Context, string) (domain.TokenClaims, error)
 	}
 )

@@ -2,7 +2,7 @@ package http
 
 import (
 	"log"
-	customer "monolith/internal/module/customer/core"
+	auth "monolith/internal/module/authorization/core"
 	"monolith/pkg/slog"
 
 	"github.com/indigo-web/indigo"
@@ -14,16 +14,16 @@ type HttpServer interface{ Run() }
 type _HttpServer struct {
 	Engine *inbuilt.Router
 
-	CustomerModule customer.CustomerUsecase
+	AuthModule auth.AuthorizationUsecase
 
 	Port string
 }
 
-func NewHttpServer(customerModule customer.CustomerUsecase, addr string) HttpServer {
+func NewHttpServer(authModule auth.AuthorizationUsecase, addr string) HttpServer {
 	httpServer := &_HttpServer{
-		Engine:         inbuilt.New(),
-		CustomerModule: customerModule,
-		Port:           addr,
+		Engine:     inbuilt.New(),
+		AuthModule: authModule,
+		Port:       addr,
 	}
 
 	httpServer.SetRouter()

@@ -34,6 +34,19 @@ type (
 )
 
 type (
+	TokenClaims struct {
+		CustomerId int
+		Expiration time.Time
+	}
+
+	TokenManager interface {
+		GenerateAccess(int) (string, error)
+		GenerateRefresh(int) (string, error)
+		Parse(string) (TokenClaims, error)
+	}
+)
+
+type (
 	DatabaseManager interface {
 		Begin(context.Context) (DatabaseManager, error)
 		Commit(context.Context) error

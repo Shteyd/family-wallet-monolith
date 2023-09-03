@@ -2,7 +2,7 @@ package http
 
 import (
 	healthHandler "monolith/internal/infrastructure/delivery/http/internal/handler/health"
-	customerHandler "monolith/internal/module/customer/delivery/http/handler"
+	authHandler "monolith/internal/module/authorization/delivery/http/handler"
 )
 
 func (server *_HttpServer) SetRouter() {
@@ -13,12 +13,12 @@ func (server *_HttpServer) SetRouter() {
 
 	apiV1Group := server.Engine.Group("/api/v1")
 	{
-		customerGroup := apiV1Group.Group("/customer")
+		authGroup := apiV1Group.Group("/auth")
 		{
-			customerGroup.Post("/sign-in", // /api/v1/customer/sign-in
-				customerHandler.NewSignIn())
-			customerGroup.Post("/sign-up", // /api/v1/customer/sign-up
-				customerHandler.NewSignUp(server.CustomerModule))
+			authGroup.Post("/sign-in", // /api/v1/auth/sign-in
+				authHandler.NewSignIn(server.AuthModule))
+			authGroup.Post("/sign-up", // /api/v1/auth/sign-up
+				authHandler.NewSignUp(server.AuthModule))
 		}
 	}
 }
