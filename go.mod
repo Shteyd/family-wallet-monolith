@@ -5,7 +5,9 @@ go 1.20
 require (
 	github.com/bytedance/sonic v1.9.2
 	github.com/doug-martin/goqu/v9 v9.18.0
+	github.com/go-playground/validator/v10 v10.15.3
 	github.com/goccy/go-json v0.10.2
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang/mock v1.6.0
 	github.com/indigo-web/indigo v0.8.1
 	github.com/jackc/pgx/v5 v5.4.3
@@ -44,8 +46,6 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.15.3 // indirect
-	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/indigo-web/utils v0.1.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
