@@ -7,7 +7,6 @@ import (
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 )
 
@@ -28,14 +27,9 @@ func (repository *_CustomerRepository) GetById(ctx context.Context, entity core.
 
 	connection := repository.PostgresAdapter.GetConnect()
 
-	rows, err := connection.Query(ctx, sql, args...)
+	model, err := connection.Query(ctx, sql, args...)
 	if err != nil {
 		return core.Customer{}, errors.Wrap(err, "execute select customer query error")
-	}
-
-	model, err := pgx.CollectOneRow(rows, pgx.RowToAddrOfStructByNameLax[model.Customer])
-	if err != nil {
-		return core.Customer{}, errors.Wrap(err, "scan customer model error")
 	}
 
 	return model.ToEntity(), nil

@@ -20,7 +20,7 @@ func (repository *_CustomerRepository) Delete(ctx context.Context, entity core.C
 		return errors.Wrap(err, "generate delete customer sql-query error")
 	}
 
-	if _, err := connection.Exec(ctx, sql, args...); err != nil {
+	if err := connection.Exec(ctx, sql, args...); err != nil {
 		return errors.Wrap(err, "delete customer from database error")
 	}
 

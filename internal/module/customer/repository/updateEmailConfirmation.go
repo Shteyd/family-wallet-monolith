@@ -19,7 +19,7 @@ func (repository *_CustomerRepository) UpdateEmailConfirmation(ctx context.Conte
 	}
 
 	connection := repository.PostgresAdapter.GetConnect()
-	if _, err := connection.Exec(ctx, sql, args...); err != nil {
+	if err := connection.Exec(ctx, sql, args...); err != nil {
 		return errors.Wrap(err, "execute update query error")
 	}
 

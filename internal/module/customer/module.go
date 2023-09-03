@@ -6,6 +6,7 @@ import (
 	"monolith/internal/module/customer/adapter/postgres"
 	"monolith/internal/module/customer/core"
 	"monolith/internal/module/customer/repository"
+	"monolith/internal/module/customer/repository/shared"
 	"monolith/internal/module/customer/usecase"
 	"time"
 )
@@ -19,7 +20,7 @@ type Dependency struct {
 
 func NewCustomerModule(dependency Dependency) core.CustomerUsecase {
 	customerCacheAdapter := cache.NewCacheAdapter(dependency.Cache)
-	customerPostgresAdapter := postgres.NewPostgresAdapter(dependency.Database)
+	customerPostgresAdapter := postgres.NewPostgresManagerAdapter[shared.CustomerModel](dependency.Database)
 
 	customerRepository := repository.NewCustomerRepository(
 		customerCacheAdapter,

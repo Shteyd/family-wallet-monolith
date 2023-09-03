@@ -18,7 +18,7 @@ func (repository *_CustomerRepository) UpdatePassword(ctx context.Context, entit
 	}
 
 	connection := repository.PostgresAdapter.GetConnect()
-	if _, err := connection.Exec(ctx, sql, args...); err != nil {
+	if err := connection.Exec(ctx, sql, args...); err != nil {
 		return errors.Wrap(err, "execute update customer query error")
 	}
 

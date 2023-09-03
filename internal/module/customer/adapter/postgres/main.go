@@ -3,34 +3,44 @@ package postgres
 import (
 	"context"
 	"monolith/internal/domain"
+	"monolith/internal/module/customer/repository/shared"
 )
 
-type PostgresAdapter interface {
-	domain.DatabaseManager
+type PostgresManagerAdapter[T shared.CustomerModel] interface {
+	Begin(ctx context.Context) (PostgresManagerAdapter[T], error)
+	Commit(ctx context.Context) error
+	GetConnect() PostgresAdapter[T]
+	Rollback(ctx context.Context) error
 }
 
-type _PostgresAdapter struct {
+type _PostgresManagerAdapter[T shared.CustomerModel] struct {
 	DatabaseManager domain.DatabaseManager
 }
 
-func NewPostgresAdapter(databaseManager domain.DatabaseManager) PostgresAdapter {
-	return &_PostgresAdapter{
+func NewPostgresManagerAdapter[T shared.CustomerModel](databaseManager domain.DatabaseManager) PostgresManagerAdapter[T] {
+	return &_PostgresManagerAdapter[T]{
 		DatabaseManager: databaseManager,
 	}
 }
 
-func (adapter *_PostgresAdapter) Begin(ctx context.Context) (domain.DatabaseManager, error) {
-	return adapter.DatabaseManager.Begin(ctx)
+func (adapter *_PostgresManagerAdapter[T]) Begin(ctx context.Context) (PostgresManagerAdapter[T], error) {
+	databaseManager, err := adapter.DatabaseManager.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewPostgresManagerAdapter[T](databaseManager), nil
 }
 
-func (adapter *_PostgresAdapter) Commit(ctx context.Context) error {
+func (adapter *_PostgresManagerAdapter[T]) Commit(ctx context.Context) error {
 	return adapter.DatabaseManager.Commit(ctx)
 }
 
-func (adapter *_PostgresAdapter) Rollback(ctx context.Context) error {
-	return adapter.DatabaseManager.Rollback(ctx)
+func (adapter *_PostgresManagerAdapter[T]) GetConnect() PostgresAdapter[T] {
+	connection := adapter.DatabaseManager.GetConnect()
+	return NewPostgresAdapter[T](connection)
 }
 
-func (adapter *_PostgresAdapter) GetConnect() domain.Database {
-	return adapter.DatabaseManager.GetConnect()
+func (adapter *_PostgresManagerAdapter[T]) Rollback(ctx context.Context) error {
+	return adapter.DatabaseManager.Rollback(ctx)
 }

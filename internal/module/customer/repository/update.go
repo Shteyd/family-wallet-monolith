@@ -19,7 +19,7 @@ func (repository *_CustomerRepository) Update(ctx context.Context, entity core.C
 	}
 
 	connection := repository.PostgresAdapter.GetConnect()
-	if _, err := connection.Exec(ctx, sql, args...); err != nil {
+	if err := connection.Exec(ctx, sql, args...); err != nil {
 		return errors.Wrap(err, "execute update customer query error")
 	}
 
