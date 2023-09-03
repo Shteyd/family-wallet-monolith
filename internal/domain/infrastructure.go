@@ -28,6 +28,12 @@ type (
 )
 
 type (
+	CryptoManager interface {
+		Encrypt(string) (string, error)
+	}
+)
+
+type (
 	DatabaseManager interface {
 		Begin(context.Context) (DatabaseManager, error)
 		Commit(context.Context) error

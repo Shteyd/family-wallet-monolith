@@ -59,9 +59,6 @@ func GetUpdate(model model.Customer) (string, []any, error) {
 	if model.Email != "" {
 		record["email"] = model.Email
 	}
-	if model.Password != "" {
-		record["password"] = model.Password
-	}
 
 	return goqu.Dialect.
 		Update(model.TableName()).
@@ -76,6 +73,17 @@ func GetUpdateEmailConfirmation(model model.Customer) (string, []any, error) {
 		Update(model.TableName()).
 		Set(goqu.Record{
 			"email_confirmation": model.EmailConfirmation},
+		).
+		Where(
+			goqu.C("id").Eq(model.Id),
+		).Prepared(true).ToSQL()
+}
+
+func GetUpdatePassword(model model.Customer) (string, []any, error) {
+	return goqu.Dialect.
+		Update(model.TableName()).
+		Set(goqu.Record{
+			"password_hash": model.Password},
 		).
 		Where(
 			goqu.C("id").Eq(model.Id),

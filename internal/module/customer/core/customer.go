@@ -16,6 +16,7 @@ type (
 		GetByCreds(context.Context, Customer) (Customer, error)
 		Update(context.Context, Customer) error
 		UpdateEmailConfirmation(context.Context, Customer) error
+		UpdatePassword(context.Context, Customer) error
 		Delete(context.Context, Customer) error
 	}
 )
