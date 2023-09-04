@@ -4,6 +4,7 @@ import (
 	"context"
 	"monolith/internal/domain"
 	"monolith/internal/module/token/core"
+	"monolith/internal/module/token/usecase/internal/utils"
 	"time"
 
 	"github.com/pkg/errors"
@@ -39,7 +40,7 @@ func (usecase *_TokenUsecase) RefreshToken(ctx context.Context, entity core.Toke
 	}
 
 	// check expiration time
-	if decodeToken.Expiration.AddDate(0, 0, 3).After(time.Now()) {
+	if utils.CheckRefreshExpirationTime(decodeToken.Expiration) {
 		refreshToken, err := usecase.TokenRepository.GenerateRefreshToken(ctx, decodeToken.CustomerId)
 		if err != nil {
 			usecase.Logger.Error(errors.Wrap(err, "generate access token error"), domain.LoggerArgs{

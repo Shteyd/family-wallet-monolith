@@ -36,10 +36,10 @@ func (repository *_TokenRepository) GenerateAccessToken(_ context.Context, custo
 }
 
 func (repository *_TokenRepository) GenerateRefreshToken(_ context.Context, customerId int) (string, error) {
-	regreshToken, err := repository.TokenAdapter.GenerateRefresh(customerId)
+	refreshToken, err := repository.TokenAdapter.GenerateRefresh(customerId)
 	if err != nil {
 		return "", errors.Wrap(err, "generate refresh token error")
 	}
 
-	return regreshToken, nil
+	return refreshToken, nil
 }
