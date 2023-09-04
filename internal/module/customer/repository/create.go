@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"monolith/internal/module/customer/adapter/redis"
 	"monolith/internal/module/customer/core"
 	"monolith/internal/module/customer/repository/internal/model"
 	"monolith/internal/module/customer/repository/internal/query"
@@ -11,21 +10,34 @@ import (
 )
 
 func (repository *_CustomerRepository) Create(ctx context.Context, entity core.Customer) (core.Customer, error) {
-	model := model.NewCustomer(entity)
+	insertModel := model.NewCustomer(entity)
 
-	sql, args, err := query.GetInsert(model)
+	sql, args, err := query.GetInsert(insertModel)
 	if err != nil {
 		return core.Customer{}, errors.Wrap(err, "generate create customer sql-query error")
 	}
 
-	if err := repository.PostgresAdapter.GetConnect().QueryRow(ctx, sql, args...).Scan(&model); err != nil {
+	transaction, err := repository.PostgresAdapter.Begin(ctx)
+	if err != nil {
+		return core.Customer{}, errors.Wrap(err, "begin create customer transaction error")
+	}
+	connection := transaction.GetConnect()
+
+	model, err := connection.Query(ctx, sql, args...)
+	if err != nil {
+		if err := transaction.Rollback(ctx); err != nil {
+			return core.Customer{}, errors.Wrap(err, "rollback create customer transaction after execute query error")
+		}
 		return core.Customer{}, errors.Wrap(err, "create customer in database error")
 	}
 
-	if err := repository.RedisAdapter.Set(ctx, redis.GetCustomerKey(model.Id), model).Err(); err != nil {
-		// TODO: тут надо бы не error-layer кидать, а warn. Реализовать выбор слоя в apperrors
-		return model.ToEntity(), errors.Wrap(err, "set into redis error")
+	if err := transaction.Commit(ctx); err != nil {
+		return core.Customer{}, errors.Wrap(err, "commit create customer transaction error")
 	}
 
-	return model.ToEntity(), nil
+	entity = model.ToEntity()
+
+	repository.CacheAdapter.Set(entity)
+
+	return entity, nil
 }

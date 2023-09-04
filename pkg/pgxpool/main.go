@@ -24,6 +24,10 @@ func NewDatabase(ctx context.Context, databaseDsn string) *pgxpool.Pool {
 		slog.Fatal(err.Error())
 	}
 
+	config.ConnConfig.RuntimeParams = map[string]string{
+		"client_encoding": "LATIN1",
+	}
+
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
 		slog.Fatal(err.Error())

@@ -35,48 +35,34 @@ func (m *MockCustomerUsecase) EXPECT() *MockCustomerUsecaseMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockCustomerUsecase) Create(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
+// GetByCreds mocks base method.
+func (m *MockCustomerUsecase) GetByCreds(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByCreds", arg0, arg1)
 	ret0, _ := ret[0].(core.Customer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockCustomerUsecaseMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+// GetByCreds indicates an expected call of GetByCreds.
+func (mr *MockCustomerUsecaseMockRecorder) GetByCreds(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCustomerUsecase)(nil).Create), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCreds", reflect.TypeOf((*MockCustomerUsecase)(nil).GetByCreds), arg0, arg1)
 }
 
-// Get mocks base method.
-func (m *MockCustomerUsecase) Get(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
+// Save mocks base method.
+func (m *MockCustomerUsecase) Save(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret := m.ctrl.Call(m, "Save", arg0, arg1)
 	ret0, _ := ret[0].(core.Customer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockCustomerUsecaseMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+// Save indicates an expected call of Save.
+func (mr *MockCustomerUsecaseMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCustomerUsecase)(nil).Get), arg0, arg1)
-}
-
-// Update mocks base method.
-func (m *MockCustomerUsecase) Update(arg0 context.Context, arg1 core.Customer) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Update indicates an expected call of Update.
-func (mr *MockCustomerUsecaseMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCustomerUsecase)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockCustomerUsecase)(nil).Save), arg0, arg1)
 }
 
 // MockCustomerRepository is a mock of CustomerRepository interface.
@@ -131,19 +117,34 @@ func (mr *MockCustomerRepositoryMockRecorder) Delete(arg0, arg1 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCustomerRepository)(nil).Delete), arg0, arg1)
 }
 
-// Get mocks base method.
-func (m *MockCustomerRepository) Get(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
+// GetByCreds mocks base method.
+func (m *MockCustomerRepository) GetByCreds(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByCreds", arg0, arg1)
 	ret0, _ := ret[0].(core.Customer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockCustomerRepositoryMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+// GetByCreds indicates an expected call of GetByCreds.
+func (mr *MockCustomerRepositoryMockRecorder) GetByCreds(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCustomerRepository)(nil).Get), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCreds", reflect.TypeOf((*MockCustomerRepository)(nil).GetByCreds), arg0, arg1)
+}
+
+// GetById mocks base method.
+func (m *MockCustomerRepository) GetById(arg0 context.Context, arg1 core.Customer) (core.Customer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetById", arg0, arg1)
+	ret0, _ := ret[0].(core.Customer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetById indicates an expected call of GetById.
+func (mr *MockCustomerRepositoryMockRecorder) GetById(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockCustomerRepository)(nil).GetById), arg0, arg1)
 }
 
 // Update mocks base method.
@@ -158,4 +159,32 @@ func (m *MockCustomerRepository) Update(arg0 context.Context, arg1 core.Customer
 func (mr *MockCustomerRepositoryMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCustomerRepository)(nil).Update), arg0, arg1)
+}
+
+// UpdateEmailConfirmation mocks base method.
+func (m *MockCustomerRepository) UpdateEmailConfirmation(arg0 context.Context, arg1 core.Customer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateEmailConfirmation", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateEmailConfirmation indicates an expected call of UpdateEmailConfirmation.
+func (mr *MockCustomerRepositoryMockRecorder) UpdateEmailConfirmation(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmailConfirmation", reflect.TypeOf((*MockCustomerRepository)(nil).UpdateEmailConfirmation), arg0, arg1)
+}
+
+// UpdatePassword mocks base method.
+func (m *MockCustomerRepository) UpdatePassword(arg0 context.Context, arg1 core.Customer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePassword", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePassword indicates an expected call of UpdatePassword.
+func (mr *MockCustomerRepositoryMockRecorder) UpdatePassword(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePassword", reflect.TypeOf((*MockCustomerRepository)(nil).UpdatePassword), arg0, arg1)
 }

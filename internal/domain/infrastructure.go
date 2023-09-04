@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -15,6 +16,33 @@ type (
 		Error(err error, args LoggerArgs)
 		Warn(msg string, args LoggerArgs)
 		Info(msg string, args LoggerArgs)
+	}
+)
+
+type (
+	Cache interface {
+		Set(string, any, time.Duration)
+		Get(string) (any, error)
+		Del(string)
+	}
+)
+
+type (
+	CryptoManager interface {
+		Encrypt(string) (string, error)
+	}
+)
+
+type (
+	TokenClaims struct {
+		CustomerId int
+		Expiration time.Time
+	}
+
+	TokenManager interface {
+		GenerateAccess(int) (string, error)
+		GenerateRefresh(int) (string, error)
+		Parse(string) (TokenClaims, error)
 	}
 )
 
